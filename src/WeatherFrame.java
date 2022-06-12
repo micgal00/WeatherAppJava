@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Instant;
@@ -19,15 +20,21 @@ public class WeatherFrame extends JFrame {
     private JLabel lbPressure;
     private JLabel lbCloudy;
     private JButton btnClear;
+    private JTable DataTable;
+    private JScrollPane scrollPane;
+    private JButton btnTableShow;
 
     Database d = new Database();
 
     public WeatherFrame() {
         setContentPane(mainPanel);
         setTitle("WeatherApp by MG & JS");
-        setSize(1920,1080);
+        setSize(1280,720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        DefaultTableModel table = (DefaultTableModel) DataTable.getModel();
+        //scrollPane.setViewportView(table);
+        //JScrollPane scrollPane = new JScrollPane();
 
         btnCityAccept.addActionListener(new ActionListener() {
             @Override
@@ -47,6 +54,7 @@ public class WeatherFrame extends JFrame {
                 lbPressure.setText(String.valueOf(recieved.pressure) + " hPa");
                 lbCloudy.setText(String.valueOf(recieved.clouds) + " %");
                 d.insertDataPoint(recieved.city, recieved.temp, recieved.wind, recieved.clouds, recieved.pressure, recieved.dt, recieved.timezone);
+
             }
         });
         btnClear.addActionListener(new ActionListener() {
@@ -57,12 +65,33 @@ public class WeatherFrame extends JFrame {
                 lbWindy.setText("");
                 lbPressure.setText("");
                 lbCloudy.setText("");
-
+                table.setRowCount(0);
+            }
+        });
+        btnTableShow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 List<DataPoint> DataPoints = d.selectDataPoints();
 
                 System.out.println("Data list: ");
                 for(DataPoint p: DataPoints)
                     System.out.println((p));
+
+                table.setRowCount(0);
+                String[] columnNames = {"city", "temp [°C]", "wind [km/h]", "pressure [hPa]", "clouds [%]", "date"};
+                DataTable.setModel(table);
+                table.setColumnIdentifiers(columnNames);
+
+                for (DataPoint dat : DataPoints) {
+                    Object[] o = new Object[6];
+                    o[0] = dat.city;
+                    o[1] = dat.temp;
+                    o[2] = dat.wind;
+                    o[3] = dat.pressure;
+                    o[4] = dat.clouds;
+                    o[5] = Instant.ofEpochSecond(dat.dt + dat.timezone).toString();
+                    table.addRow(o);
+                }
             }
         });
     }
@@ -73,11 +102,11 @@ public class WeatherFrame extends JFrame {
     }
 
     private void createUIComponents(){
-        imSun = new JLabel(new ImageIcon("sunny.png"));
-        imWindy = new JLabel(new ImageIcon("windy.png"));
-        imPressure = new JLabel(new ImageIcon("pressure.png"));
-        imCloudy= new JLabel(new ImageIcon("cloudy.png"));
-        imPoland = new JLabel(new ImageIcon("poland_map.png"));
+        imSun = new JLabel(new ImageIcon("temperature_128px.png"));
+        imWindy = new JLabel(new ImageIcon("windy_128px.png"));
+        imPressure = new JLabel(new ImageIcon("pressure_128px.png"));
+        imCloudy= new JLabel(new ImageIcon("cloudy_128px.png"));
+        //imPoland = new JLabel(new ImageIcon("poland_map.png"));
     }
 
 

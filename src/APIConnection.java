@@ -24,7 +24,7 @@ class DataPoint {
         this.timezone = tz;
     }
 
-    public String toString() { return String.format("%f %d %d", temp, pressure, dt); }
+    public String toString() { return String.format("%s, %f %f %d %f",city, temp, wind, pressure, clouds); }
 }
 
 public class APIConnection {
