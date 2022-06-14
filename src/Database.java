@@ -92,4 +92,30 @@ public class Database {
         }
         return DataPoints;
     }
+
+    public List<DataPoint> selectDataPointsByCity(String cityName) {
+        List<DataPoint> DataPoints = new LinkedList<DataPoint>();
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM DataPoints WHERE city = '" + cityName + "'");
+            int id;
+            String city;
+            double temp, windspeed, clouds;
+            int pressure, time, timezone;
+            while(result.next()) {
+                id = result.getInt("id_datapoint");
+                city = result.getString("city");
+                temp = result.getDouble("temperature");
+                windspeed = result.getDouble("windspeed");
+                clouds = result.getDouble("clouds");
+                pressure = result.getInt("pressure");
+                time = result.getInt("time");
+                timezone = result.getInt("timezone");
+                DataPoints.add(new DataPoint(id, city, temp, pressure, windspeed, clouds, time, timezone));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return DataPoints;
+    }
 }

@@ -66,13 +66,19 @@ public class WeatherFrame extends JFrame {
                 lbPressure.setText("");
                 lbCloudy.setText("");
                 table.setRowCount(0);
+                tfCity.setText("");
             }
         });
         btnTableShow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<DataPoint> DataPoints = d.selectDataPoints();
+                List<DataPoint> DataPoints;
 
+                if (tfCity.getText().isEmpty()) {
+                    DataPoints = d.selectDataPoints();
+                } else {
+                    DataPoints = d.selectDataPointsByCity(tfCity.getText());
+                }
                 System.out.println("Data list: ");
                 for(DataPoint p: DataPoints)
                     System.out.println((p));
